@@ -4,4 +4,4 @@ venv/
 # Ignore specific model file
 model/colorization_release_v2.caffemodel
 
-git_images/
+git_images
