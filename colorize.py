@@ -1,5 +1,3 @@
-
-
 # Import statements
 import numpy as np
 import argparse
@@ -12,13 +10,15 @@ Download the model files:
 	2. pts_in_hull.npy:					   https://github.com/richzhang/colorization/blob/caffe/colorization/resources/pts_in_hull.npy
 	3. colorization_release_v2.caffemodel: https://www.dropbox.com/s/dx0qvhhp5hbcx7z/colorization_release_v2.caffemodel?dl=1 
  
-	Download the no.3 module as no.1 already exsisted  hai
-
+	Download the no.3 module as no.1 already existed hai
 """
 
 # Paths to load the model
 # New directory path
-DIR = r"C:\Users\HP\Desktop\Colorizing-black-and-white-images-using-Python"
+DIR = r"C:\Users\HP\Desktop\IMAGE COLOURIZER"
+
+# Output folder for colorized images
+OUTPUT_DIR = r"C:\Users\HP\Desktop\IMAGE COLOURIZER\output"
 
 # Updated paths to model files
 PROTOTXT = os.path.join(DIR, r"model\colorization_deploy_v2.prototxt")
@@ -67,9 +67,32 @@ colorized = np.clip(colorized, 0, 1)
 
 colorized = (255 * colorized).astype("uint8")
 
+# Show the original and colorized images for preview
 cv2.imshow("Original", image)
 cv2.imshow("Colorized", colorized)
-cv2.waitKey(0)
 
+# Wait for a key press before continuing (this allows user to preview first)
+cv2.waitKey(0)
+cv2.destroyAllWindows()  # Close the windows after preview
+
+# Function to generate unique filenames with counter
+def get_unique_filename(directory, base_name, extension):
+    counter = 1
+    file_path = os.path.join(directory, f"{base_name}{counter}{extension}")
+    while os.path.exists(file_path):
+        counter += 1
+        file_path = os.path.join(directory, f"{base_name}{counter}{extension}")
+    return file_path
+
+# After preview, ask if the user wants to save the colorized image
+save_image = input("Do you want to save the colorized image? (yes/no): ").strip().lower()
+
+if save_image == "yes":
+    # Get a unique filename in the output folder
+    output_path = get_unique_filename(OUTPUT_DIR, "colorized_image_", ".jpg")
+    cv2.imwrite(output_path, colorized)
+    print(f"Colorized image saved at {output_path}")
+else:
+    print("Image not saved.")
 
 # python colorize.py -i images\nature.jpg
